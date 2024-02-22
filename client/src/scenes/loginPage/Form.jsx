@@ -65,6 +65,7 @@ const Form = () => {
         }
         formdata.append("picturePath", values.picture.name);
 
+
         const savedUserResponse = await fetch(
             "http://localhost:3001/auth/register",
             {
@@ -305,8 +306,5 @@ const Form = () => {
 
     )
 }
-
-
-
 
 export default Form;

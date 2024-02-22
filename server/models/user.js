@@ -25,7 +25,7 @@ const userSchema = new mongoose.Schema(
             min: 5,
             max: 50
         },
-        picture: {
+        picturePath: {
             type: String,
             default: "",
         },
@@ -36,7 +36,7 @@ const userSchema = new mongoose.Schema(
         location: String,
         occupation: String,
         viewedProfile: Number,
-        impressions: Number
+        impressions: Number, 
 
     },
     { timestamps: true }

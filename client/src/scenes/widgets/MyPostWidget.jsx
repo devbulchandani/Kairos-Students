@@ -75,7 +75,7 @@ const MyPostWidget = ({ picturePath }) => {
             </FlexBetween>
             {isImage && (
                 <Box
-                    border={`1px solid ${medium}`}
+                    border={`1px solid ${medium}`}    
                     borderRadius="5px"
                     mt="1rem"
                     p="1rem"
@@ -88,7 +88,7 @@ const MyPostWidget = ({ picturePath }) => {
                         {({ getRootProps, getInputProps }) => (
                             <FlexBetween>
                                 <Box
-                                    {...getRootProps()}
+                                    {...getRootProps()}        
                                     border={`2px dashed ${palette.primary.main}`}
                                     p="1rem"
                                     width="100%"
