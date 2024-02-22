@@ -19,24 +19,25 @@ const userSchema = new mongoose.Schema(
             max: 50,
             unique: true
         },
-        password:{
+        password: {
             type: String,
             required: true,
             min: 5,
             max: 50
         },
-        picture:{
+        picture: {
             type: String,
             default: "",
         },
-        friends:{
+        friends: {
             type: Array,
             default: [],
-            location: String,
-            occupation: String,
-            viewedProfile: Number,
-            impressions: Number
-        }
+        },
+        location: String,
+        occupation: String,
+        viewedProfile: Number,
+        impressions: Number
+
     },
     { timestamps: true }
 )

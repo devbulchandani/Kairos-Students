@@ -66,7 +66,7 @@ const Form = () => {
         formdata.append("picturePath", values.picture.name);
 
         const savedUserResponse = await fetch(
-            "https://kairos-opal.vercel.app/auth/register",
+            "http://localhost:3001/auth/register",
             {
                 method: "POST",
                 body: formdata
@@ -82,7 +82,7 @@ const Form = () => {
 
     const login = async (values, onSubmitProps) => {
         const loggedInResponse = await fetch(
-            "https://kairos-opal.vercel.app/auth/login",
+            "http://localhost:3001/auth/login",
             {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },

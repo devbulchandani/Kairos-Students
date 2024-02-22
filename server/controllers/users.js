@@ -1,17 +1,26 @@
 import User from "../models/user.js";
 
 
+
 //read 
 export const getUser = async (req, res) => {
     try {
         const { id } = req.params;
+        console.log("Request Params:", req.params);
+        console.log("Received request for userId:", id);
         const user = await User.findById(id);
+        console.log("User Data:", user);
+
+        if (!user) {
+            console.log("User not found");
+            return res.status(404).json({ message: "User not found" });
+        }
         res.status(200).json(user);
     } catch (err) {
-        res.status(404).json({ message: err.message })
-    };
-}
-
+        console.error(err);
+        res.status(404).json({ message: err.message });
+    }
+};
 
 export const getUserFriends = async (req, res) => {
     try {
