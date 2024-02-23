@@ -18,7 +18,8 @@ import {
     Notifications,
     Menu,
     Help,
-    Close
+    Close,
+    VideoChat
 } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { setMode, setLogout } from "state";
@@ -95,6 +96,12 @@ const Navbar = () => {
 
                     <IconButton>
                         <Message sx={{ fontSize: '25px' }} />
+                    </IconButton>
+
+                    <IconButton onClick={() => {
+                        navigate("/videochat");
+                    }}>
+                        <VideoChat />
                     </IconButton>
 
                     <IconButton>

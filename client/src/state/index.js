@@ -29,9 +29,10 @@ export const authSlice = createSlice({
             if (state.user) {
                 state.user.friends = action.payload.friends;
             } else {
-                console.error("User Friends Non Exixtent");
+                console.error("user friends non-existent :(");
             }
         },
+
 
         setPosts: (state, action) => {
             state.posts = action.payload.posts;
@@ -47,5 +48,5 @@ export const authSlice = createSlice({
     }
 })
 
-export const {setMode, setLogin, setLogout, setFriends, setPosts, setPost} = authSlice.actions;
+export const { setMode, setLogin, setLogout, setFriends, setPosts, setPost } = authSlice.actions;
 export default authSlice.reducer;

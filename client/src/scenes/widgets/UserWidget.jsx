@@ -48,7 +48,7 @@ const UserWidget = ({ userId, picturePath }) => {
         impressions,
         friends,
     } = user;
-
+    console.log("User:", user)
 
     return (
         <WidgetWrapper>
