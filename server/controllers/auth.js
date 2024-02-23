@@ -11,13 +11,14 @@ export const register = async (req, res) => {
             lastname,
             email,
             password,
-            picturePath,
+            picturePath, 
             friends,
             location,
-            occupation
-        } = req.body
-        console.log("request body:", req.body)
+            occupation,
+        } = req.body;
 
+        // Set default value if picturePath is not provided
+        const actualPicturePath = picturePath || "maleAvtaar.jpg";
 
         const salt = await bcrypt.genSalt();
         const passwordHash = await bcrypt.hash(password, salt);
@@ -27,21 +28,21 @@ export const register = async (req, res) => {
             lastname,
             email,
             password: passwordHash,
-            picturePath,
+            picturePath: actualPicturePath,
             friends,
             location,
             occupation,
             viewedProfile: Math.floor(Math.random() * 10000),
-            impressions: Math.floor(Math.random() * 10000)
+            impressions: Math.floor(Math.random() * 10000),
         });
 
         const savedUser = await newUser.save();
-        console.log(`Saved user : ${savedUser}`)
+        console.log(`Saved user : ${savedUser}`);
         res.status(201).json(savedUser);
     } catch (err) {
-        res.status(500).json({ error: err.message })
+        res.status(500).json({ error: err.message });
     }
-}
+};
 
 export const login = async (req, res) => {
     try {
@@ -56,9 +57,9 @@ export const login = async (req, res) => {
             return res.status(400).json({ msg: "Invalid Password" })
         }
 
-        const token = jwt.sign({ id: user.id}, process.env.JWT_SECRET);
+        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
         delete user.password;
-        res.status(200).json({token, user});
+        res.status(200).json({ token, user });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

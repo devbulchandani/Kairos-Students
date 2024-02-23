@@ -10,7 +10,9 @@ import Friend from "components/Friend";
 import WidgetWrapper from "components/WidgetWrapper";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setPost } from "state";
+import { setPost, setPosts } from "state";
+import DeleteIcon from '@mui/icons-material/Delete';
+import AreYouSure from "components/AreYouSure";
 
 const PostWidget = ({
     postId,
@@ -22,6 +24,8 @@ const PostWidget = ({
     userPicturePath,
     likes,
     comments,
+    getPosts
+
 }) => {
     const [isComments, setIsComments] = useState(false);
     const dispatch = useDispatch();
@@ -33,6 +37,15 @@ const PostWidget = ({
     const { palette } = useTheme();
     const main = palette.neutral.main;
     const primary = palette.primary.main;
+    const [openModal, setOpenModal] = useState(false);
+
+    const handleOpenModal = () => {
+        setOpenModal(true);
+    }
+
+    const handleCloseModal = () => {
+        setOpenModal(false);
+    }
 
     const patchLike = async () => {
         const response = await fetch(`http://localhost:3001/posts/${postId}/like`, {
@@ -46,6 +59,29 @@ const PostWidget = ({
         const updatedPost = await response.json();
         dispatch(setPost({ post: updatedPost }));
     };
+
+    console.log("Post Id: " + postId);
+
+    const deletePost = async () => {
+        const response = await fetch(`http://localhost:3001/posts/${postId}/delete`, {
+            method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const deletedPostMessage = await response.json();
+        console.log(deletedPostMessage);
+
+        const updatedPosts = await getPosts();
+        console.log(updatedPosts);
+
+    }
 
     return (
         <WidgetWrapper m="2rem 0">
@@ -88,9 +124,28 @@ const PostWidget = ({
                     </FlexBetween>
                 </FlexBetween>
 
-                <IconButton>
-                    <ShareOutlined />
-                </IconButton>
+                <Box>
+                    <IconButton>
+                        <ShareOutlined />
+                    </IconButton>
+                    {loggedInUserId === postUserId && (
+                        <>
+                            <IconButton
+                                onClick={handleOpenModal}
+                            >
+                                <DeleteIcon />
+                            </IconButton>
+                            <AreYouSure
+                                handleCloseModal={handleCloseModal}
+                                deletePost={deletePost}
+                                openModal={openModal}
+                            />
+                        </>
+
+                    )}
+
+                </Box>
+
             </FlexBetween>
             {isComments && (
                 <Box mt="0.5rem">

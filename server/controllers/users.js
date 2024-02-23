@@ -6,10 +6,8 @@ import User from "../models/user.js";
 export const getUser = async (req, res) => {
     try {
         const { id } = req.params;
-        console.log("Request Params:", req.params);
-        console.log("Received request for userId:", id);
         const user = await User.findById(id);
-        console.log("User Data:", user);
+
 
         if (!user) {
             console.log("User not found");

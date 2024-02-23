@@ -23,7 +23,7 @@ const registerSchema = yup.object().shape({
     password: yup.string().required("required"),
     location: yup.string().required("required"),
     occupation: yup.string().required("required"),
-    picture: yup.string().required("required")
+    picture: yup.string(),
 })
 
 const loginSchema = yup.object().shape({
@@ -58,21 +58,35 @@ const Form = () => {
     const isRegister = pageType === "register"
 
     const register = async (values, onSubmitProps) => {
-        // this allows us to send form info with image
+        // Create a new FormData instance
         const formdata = new FormData();
+
+        // Iterate over the form values
         for (let value in values) {
-            formdata.append(value, values[value]);
-        }
-        formdata.append("picturePath", values.picture.name);
-
-
-        const savedUserResponse = await fetch(
-            "http://localhost:3001/auth/register",
-            {
-                method: "POST",
-                body: formdata
+            // If the current value is "picture" and it's falsy (not selected by the user)
+            if (value === "picture" && !values[value]) {
+                // Append the default picture path directly or use the actual content of the default image
+                formdata.append(value, "maleAvtaar.jpg"); // Set your default picture path
+            } else {
+                // For other fields, append the values as usual
+                formdata.append(value, values[value]);
             }
-        );
+        }
+
+        // Append the picturePath separately based on whether a picture is selected or not
+        if (!values.picture || !values.picture.name) {
+            formdata.append("picturePath", "maleAvtaar.jpg");
+        } else {
+            formdata.append("picturePath", values.picture.name);
+        }
+
+        // Send the formdata in the request
+        const savedUserResponse = await fetch("http://localhost:3001/auth/register", {
+            method: "POST",
+            body: formdata,
+        });
+
+        // Handle the response as needed
         const savedUser = await savedUserResponse.json();
         onSubmitProps.resetForm();
 

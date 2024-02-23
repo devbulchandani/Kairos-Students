@@ -27,7 +27,7 @@ const userSchema = new mongoose.Schema(
         },
         picturePath: {
             type: String,
-            default: "",
+            default: "maleAvtaar.jpg",
         },
         friends: {
             type: Array,

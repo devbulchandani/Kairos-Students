@@ -52,11 +52,20 @@ export const getUserPosts = async (req, res) => {
     }
 }
 
+// export const getUpdatedPosts = async (req, res) => {
+//     const posts = await Post.find();
+//     res.status(200).json(posts)
+// }
+
 //Update
 export const likePosts = async (req, res) => {
     try {
         const { id } = req.params;
         const { userId } = req.body
+        console.log("post like request params:", req.params);
+        console.log("post like request body:", req.body);
+        console.log("liking post with id:", id)
+        console.log("post liked by:", userId)
         const post = await Post.findById(id);
         const isLiked = post.likes.get(userId);
 
@@ -83,4 +92,22 @@ export const likePosts = async (req, res) => {
 //Comments
 
 //Delete Post
+export const deletePost = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const post = await Post.findByIdAndDelete(id);
+
+        console.log("PostTo be deleted:", post)
+
+        if (!post) {
+            return res.status(404).json({ message: 'Post not found' });
+        }
+
+
+        res.json({ message: 'Post deleted successfully' });
+    } catch (err) {
+        res.status(404).json({ message: err.message });
+    }
+} 
 
