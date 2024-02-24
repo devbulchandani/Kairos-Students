@@ -16,14 +16,17 @@ import {
     Button,
     IconButton,
     useMediaQuery,
+    Alert,
+    Snackbar
 } from "@mui/material";
 import FlexBetween from "components/FlexBetween";
 import Dropzone from "react-dropzone";
 import UserImage from "components/UserImage";
-import WidgetWrapper  from "components/WidgetWrapper";
+import WidgetWrapper from "components/WidgetWrapper";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setPosts } from "state";
+import Succes from "components/Succes";
 
 const MyPostWidget = ({ userId, picturePath }) => {
     const dispatch = useDispatch();
@@ -35,9 +38,19 @@ const MyPostWidget = ({ userId, picturePath }) => {
     const isNonMobileScreens = useMediaQuery("(min-width: 924px)");
     const mediumMain = palette.neutral.mediumMain;
     const medium = palette.neutral.medium;
+    const [openAlert, setOpenAlert] = useState(false);
+
+    const getPosts = async () => {
+        const response = await fetch("http://localhost:3001/posts", {
+            method: "GET",
+            headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await response.json();
+        dispatch(setPosts({ posts: data }));
+    };
 
     const handlePost = async () => {
-        const formdata = new FormData();             
+        const formdata = new FormData();
         formdata.append("userId", userId);
         formdata.append("description", post);
         if (image) {
@@ -50,11 +63,27 @@ const MyPostWidget = ({ userId, picturePath }) => {
             headers: { Authorization: `Bearer ${token}` },
             body: formdata,
         });
-        const posts = await response.json();
-        console.log(posts);
-        dispatch(setPosts({ posts }));
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const newPostMessage = await response.json();
+        console.log(newPostMessage);
+        const updatedPosts = await getPosts();
+        console.log(updatedPosts);
         setImage(null);
         setPost("");
+    };
+
+    const handleAlertClick = () => {
+        setOpenAlert(true);
+    };
+
+    const handleCloseAlert = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpenAlert(false);
     };
 
     return (
@@ -75,7 +104,7 @@ const MyPostWidget = ({ userId, picturePath }) => {
             </FlexBetween>
             {isImage && (
                 <Box
-                    border={`1px solid ${medium}`}    
+                    border={`1px solid ${medium}`}
                     borderRadius="5px"
                     mt="1rem"
                     p="1rem"
@@ -88,7 +117,7 @@ const MyPostWidget = ({ userId, picturePath }) => {
                         {({ getRootProps, getInputProps }) => (
                             <FlexBetween>
                                 <Box
-                                    {...getRootProps()}        
+                                    {...getRootProps()}
                                     border={`2px dashed ${palette.primary.main}`}
                                     p="1rem"
                                     width="100%"
@@ -156,7 +185,10 @@ const MyPostWidget = ({ userId, picturePath }) => {
 
                 <Button
                     disabled={!post}
-                    onClick={handlePost}
+                    onClick={() => {
+                        handlePost();
+                        handleAlertClick();
+                    }}
                     sx={{
                         color: palette.background.alt,
                         backgroundColor: palette.primary.main,
@@ -165,6 +197,10 @@ const MyPostWidget = ({ userId, picturePath }) => {
                 >
                     POST
                 </Button>
+                <Succes
+                    handleCloseAlert={handleCloseAlert}
+                    openAlert={openAlert}
+                    message="New Post Added Succesfully" />
             </FlexBetween>
         </WidgetWrapper>
     );

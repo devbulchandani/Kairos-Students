@@ -1,3 +1,4 @@
+import * as React from 'react';
 import {
     ChatBubbleOutlineOutlined,
     FavoriteBorderOutlined,
@@ -13,6 +14,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { setPost, setPosts } from "state";
 import DeleteIcon from '@mui/icons-material/Delete';
 import AreYouSure from "components/AreYouSure";
+import Slide from '@mui/material/Slide';
+import Succes from "components/Succes";
+
+
 
 const PostWidget = ({
     postId,
@@ -39,6 +44,8 @@ const PostWidget = ({
     const primary = palette.primary.main;
     const [openModal, setOpenModal] = useState(false);
 
+    const [openAlert, setOpenAlert] = React.useState(false);
+
     const handleOpenModal = () => {
         setOpenModal(true);
     }
@@ -46,6 +53,17 @@ const PostWidget = ({
     const handleCloseModal = () => {
         setOpenModal(false);
     }
+
+    const handleAlertClick = () => {
+        setOpenAlert(true);
+    };
+
+    const handleCloseAlert = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpenAlert(false);
+    };
 
     const patchLike = async () => {
         const response = await fetch(`http://localhost:3001/posts/${postId}/like`, {
@@ -131,7 +149,9 @@ const PostWidget = ({
                     {loggedInUserId === postUserId && (
                         <>
                             <IconButton
-                                onClick={handleOpenModal}
+                                onClick={() => {
+                                    handleOpenModal();
+                                }}
                             >
                                 <DeleteIcon />
                             </IconButton>
@@ -139,6 +159,14 @@ const PostWidget = ({
                                 handleCloseModal={handleCloseModal}
                                 deletePost={deletePost}
                                 openModal={openModal}
+                                handleAlertClick={handleAlertClick}
+                                handleCloseAlert={handleCloseAlert}
+                                openAlert={openAlert}
+                            />
+                            <Succes
+                                handleCloseAlert={handleCloseAlert}
+                                openAlert={openAlert}
+                                message="Post deleted"
                             />
                         </>
 
